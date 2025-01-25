@@ -1,0 +1,38 @@
+{
+  "name": "ts-backend",
+  "version": "1.0.0",
+  "description": "Node.js TypeScript starter project",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node  dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "express",
+    "mongoose"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.2.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.2.1",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^20.6.0",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.2.2"
+  }
+}

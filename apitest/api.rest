@@ -1,0 +1,154 @@
+@baseUrl = http://localhost:3000/api
+
+###var
+@cookie =""
+### Auth Routes
+
+# Register Admin
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "ADMIN"
+}
+
+### Login Admin
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "admin123"
+}
+
+### Item Routes
+
+# Create Item
+POST {{baseUrl}}/item
+Cookie: token={{"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNzgyMzk3NiwiZXhwIjoxNzM3OTEwMzc2fQ.C4j1SqZgsM5fFqeZLv1o9ORfTGOlt8qROKC-55dXk6Y; Max-Age=2592000; Path=/; Expires=Mon, 24 Feb 2025 16:52:56 GMT"}}
+Content-Type: application/json
+
+{
+    "name": "Test Item",
+    "unitPrice": 100
+}
+
+# Get All Items
+GET {{baseUrl}}/items
+Cookie: token={{cookie}}
+
+# Get Item by ID
+GET {{baseUrl}}/item/1
+Cookie: token={{cookie}}
+
+# Update Item
+PUT {{baseUrl}}/item/1
+Cookie: token={{cookie}}
+Content-Type: application/json
+
+{
+    "name": "Updated Item",
+    "unitPrice": 150
+}
+
+# Delete Item (Admin only)
+DELETE {{baseUrl}}/item/1
+Cookie: token={{cookie}}
+
+### Dealer Routes
+
+# Create Dealer
+POST {{baseUrl}}/dealer
+Cookie: cookie={{cookie}}
+Content-Type: application/json
+
+{
+    "name": "Test Dealer",
+    "contact": "1234567890",
+    "address": "Test Address"
+}
+
+# Get All Dealers
+GET {{baseUrl}}/dealers
+Cookie: token={{cookie}}
+
+# Search Dealer
+GET {{baseUrl}}/dealer/search?name=Test
+Cookie: token={{cookie}}
+
+### Stock Routes
+
+# Get Stock (Admin only)
+GET {{baseUrl}}/stock
+Cookie: token={{cookie}}
+
+# Increment Stock
+POST {{baseUrl}}/stock/increment
+Cookie: token={{cookie}}
+Content-Type: application/json
+
+{
+    "itemId": 1,
+    "quantity": 10
+}
+
+# Decrement Stock
+POST {{baseUrl}}/stock/decrement
+Cookie: token={{cookie}}
+Content-Type: application/json
+
+{
+    "itemId": 1,
+    "quantity": 5
+}
+
+# Update Stock
+POST {{baseUrl}}/stock/update
+Cookie: cookie={{cookie}}
+Content-Type: application/json
+
+{
+    "itemId": 1,
+    "quantity": 20
+}
+
+# Update Stock by Transaction
+POST {{baseUrl}}/stock/update-by-transaction
+Cookie: cookie={{cookie}}
+Content-Type: application/json
+
+{
+    "transactionId": 1
+}
+
+### Transaction Routes
+
+# Create Transaction
+POST {{baseUrl}}/transaction
+Cookie: cookie={{cookie}}
+Content-Type: application/json
+
+{
+    "dealerId": 1,
+    "userId": 1,
+    "items": [
+        {
+            "itemId": 1,
+            "quantity": 2,
+            "price": 100
+        }
+    ],
+    "totalPrice": 200
+}
+
+# Get All Transactions
+GET {{baseUrl}}/transactions
+Cookie: cookie={{cookie}}
+
+# Get Transactions by Date Range
+GET {{baseUrl}}/transactions/by-date?startDate=2024-03-01&endDate=2024-03-20
+Cookie: cookie={{cookie}}
+
