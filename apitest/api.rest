@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api
 
 ###var
-@cookie =""
+@cookie =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNzg3MTY4OCwiZXhwIjoxNzM3OTU4MDg4fQ.PKDpjfNWVdFY9QtxKgEi6i93dmQ2rNTSoJ7wp3AgphY; Max-Age=2592000; Path=/; Expires=Tue, 25 Feb 2025 06:08:08 GMT
 ### Auth Routes
 
 # Register Admin
@@ -28,12 +28,12 @@ Content-Type: application/json
 
 # Create Item
 POST {{baseUrl}}/item
-Cookie: token={{"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNzgyMzk3NiwiZXhwIjoxNzM3OTEwMzc2fQ.C4j1SqZgsM5fFqeZLv1o9ORfTGOlt8qROKC-55dXk6Y; Max-Age=2592000; Path=/; Expires=Mon, 24 Feb 2025 16:52:56 GMT"}}
+Cookie: token={{cookie}}
 Content-Type: application/json
 
 {
-    "name": "Test Item",
-    "unitPrice": 100
+    "name": "ଧାନ",
+    "unitPrice": 15
 }
 
 # Get All Items

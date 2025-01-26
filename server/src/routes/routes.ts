@@ -36,14 +36,13 @@ router.post("/register", registerController);
 router.post("/login", loginController);
 
 //Item Routes
-router.post("/item", authenticate, createItemController);
-router.get("/items", authenticate, getAllItemsController);
+router.post("/item", createItemController);
+router.get("/items", getAllItemsController);
 router.get("/item/:id", authenticate, getItemController);
-router.put("/item/:id", authenticate, updateItemController);
+router.put("/item/:id", updateItemController);
 router.delete(
   "/item/:id",
-  authenticate,
-  authorize(["ADMIN"]),
+
   deleteItemController
 );
 

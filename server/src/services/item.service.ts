@@ -10,8 +10,7 @@ export const createItem = async (name: string, unitPrice: number) => {
 // Update item
 export const updateItem = async (
   id: number,
-  name: string,
-  unitPrice: number
+  { name, unitPrice }: { name?: string; unitPrice?: number }
 ) => {
   return await prisma.item.update({
     where: { id },
