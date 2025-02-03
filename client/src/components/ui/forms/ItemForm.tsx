@@ -1,98 +1,85 @@
-import { useState, useEffect } from "react";
-import OdiaInput from "../OdiaInput";
-import { useCreateItem, useUpdateItem } from "../../../hooks/useItem";
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+import {
+  useCreateItemMutation,
+  useItemStore,
+  useUpdateItemMutation,
+} from "../../../hooks/itemHooks";
+import LangInput from "../LangInput";
 
 interface ItemFormProps {
-  item?: {
-    id: number;
-    name: string;
-    unitPrice: number;
-  } | null;
   onClose: () => void;
 }
 
-function ItemForm({ item, onClose }: ItemFormProps) {
+export const ItemForm: React.FC<ItemFormProps> = ({ onClose }) => {
+  const { selectedItem, setSelectedItem } = useItemStore();
+  const createMutation = useCreateItemMutation();
+  const updateMutation = useUpdateItemMutation();
+
   const [formData, setFormData] = useState({
-    name: "",
-    unitPrice: 0,
+    name: selectedItem?.name || "",
+    unitPrice: selectedItem ? String(selectedItem.unitPrice) : "",
   });
-
-  const createItem = useCreateItem();
-  const updateItem = useUpdateItem();
-
-  // Sync formData with the incoming `item` prop
-  useEffect(() => {
-    if (item) {
-      setFormData({
-        name: item.name || "",
-        unitPrice: item.unitPrice || 0,
-      });
-    }
-  }, [item]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      if (item?.id) {
-        await updateItem.mutateAsync({
-          id: item.id,
-          ...formData,
-        });
+      const payload = {
+        name: formData.name,
+        unitPrice: Number(formData.unitPrice),
+      };
+
+      if (selectedItem?.id) {
+        await updateMutation.mutateAsync({ ...payload, id: selectedItem.id });
       } else {
-        await createItem.mutateAsync(formData);
+        await createMutation.mutateAsync(payload);
       }
+
+      toast.success("Item saved successfully");
+      setSelectedItem(null);
       onClose();
-      setFormData({ name: "", unitPrice: 0 });
-    } catch (error) {
-      console.error("Error saving item:", error);
+    } catch {
+      toast.error("Failed to save item");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | { target: { name: string; value: string } }
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "unitPrice" ? Number(value) : value,
-    }));
-  };
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 space-y-6 bg-white rounded-lg shadow-md"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
           Name
         </label>
-        <OdiaInput
+        <LangInput
           name="name"
           value={formData.name}
           onChange={(value) =>
-            handleChange({ target: { name: "name", value } })
+            setFormData((prev) => ({ ...prev, name: value }))
           }
-          required
-          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-amber-500"
+          placeholder="Item Name"
+          isRequired={true}
+          className="w-full"
         />
       </div>
 
       <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
           Unit Price
         </label>
         <input
           type="number"
-          name="unitPrice"
           value={formData.unitPrice}
-          onChange={handleChange}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, unitPrice: e.target.value }))
+          }
+          placeholder="Unit Price"
+          step="0.01"
           required
-          min={0}
-          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-amber-500"
+          className="w-full px-3 py-2 border rounded-md"
         />
       </div>
 
@@ -100,19 +87,18 @@ function ItemForm({ item, onClose }: ItemFormProps) {
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-gray-800 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
+          className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500"
+          disabled={isSubmitting}
+          className="px-4 py-2 text-white rounded-lg bg-primary hover:bg-primary-dark disabled:opacity-50"
         >
-          {item?.id ? "Update" : "Create"}
+          {isSubmitting ? "Saving..." : "Save"}
         </button>
       </div>
     </form>
   );
-}
-
-export default ItemForm;
+};

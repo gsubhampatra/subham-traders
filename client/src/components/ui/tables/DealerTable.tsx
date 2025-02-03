@@ -1,52 +1,51 @@
-// components/Items/ItemTable.tsx
-import React from "react";
+// components/Dealers/DealerTable.tsx
+import React, { useState } from "react";
 import { Table } from "../common/Table";
 import { RiEditLine, RiDeleteBinLine } from "react-icons/ri";
 import { ConfirmationModal } from "../common/ConfirmationModal";
-import { Item } from "../../../types/responseTypes";
+import { Dealer } from "../../../types/responseTypes";
 
-interface ItemTableProps {
-  items: Item[];
+interface DealerTableProps {
+  dealers: Dealer[];
   isLoading: boolean;
-  onEdit: (item: Item) => void;
-  onDelete: (item: Item) => void;
+  onEdit: (dealer: Dealer) => void;
+  onDelete: (dealer: Dealer) => void;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({
-  items,
+export const DealerTable: React.FC<DealerTableProps> = ({
+  dealers,
   isLoading,
   onEdit,
   onDelete,
 }) => {
-  const [selectedItem, setSelectedItem] = React.useState<Item | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [selectedDealer, setSelectedDealer] = useState<Dealer | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const columns = [
     {
       header: "Name",
       accessor: "name",
-      className: "w-1/2",
+      className: "w-1/3",
     },
     {
-      header: "Unit Price",
-      accessor: "unitPrice",
-      render: (item: Item) => `₹${item.unitPrice.toFixed(2)}`,
-      className: "w-1/4 text-right",
+      header: "Contact",
+      accessor: "contact",
+      className: "w-1/3",
     },
     {
       header: "Actions",
       accessor: "actions",
-      render: (item: Item) => (
+      render: (dealer: Dealer) => (
         <div className="flex justify-end space-x-2">
           <button
-            onClick={() => onEdit(item)}
+            onClick={() => onEdit(dealer)}
             className="p-1.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
             <RiEditLine className="w-4 h-4" />
           </button>
           <button
             onClick={() => {
-              setSelectedItem(item);
+              setSelectedDealer(dealer);
               setIsDeleteModalOpen(true);
             }}
             className="p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
@@ -55,13 +54,13 @@ export const ItemTable: React.FC<ItemTableProps> = ({
           </button>
         </div>
       ),
-      className: "w-1/4 text-right",
+      className: "w-1/3 text-right",
     },
   ];
 
   const handleConfirmDelete = () => {
-    if (selectedItem) {
-      onDelete(selectedItem);
+    if (selectedDealer) {
+      onDelete(selectedDealer);
       setIsDeleteModalOpen(false);
     }
   };
@@ -70,8 +69,8 @@ export const ItemTable: React.FC<ItemTableProps> = ({
     <>
       <Table
         columns={columns}
-        data={items}
-        emptyMessage="No items found"
+        data={dealers}
+        emptyMessage="No dealers found"
         loading={isLoading}
       />
 
@@ -79,8 +78,8 @@ export const ItemTable: React.FC<ItemTableProps> = ({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Item"
-        message="Are you sure you want to delete this item?"
+        title="Delete Dealer"
+        message="Are you sure you want to delete this dealer?"
       />
     </>
   );

@@ -5,13 +5,16 @@ export const createTransaction = async (
   dealerId: number,
   userId: number,
   items: { itemId: number; quantity: number; price: number }[],
-  totalPrice: number
+  totalAmount: number,
+  paidAmount: number,
+
 ) => {
   return await prisma.transaction.create({
     data: {
       dealerId,
       userId,
-      totalPrice,
+      totalAmount,
+      paidAmount,
       items: {
         create: items.map((item) => ({
           itemId: item.itemId,

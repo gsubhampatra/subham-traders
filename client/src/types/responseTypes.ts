@@ -29,11 +29,13 @@ export interface Transaction {
   id: number;
   dealerId: number;
   userId: number;
-  totalPrice: number;
+  totalAmount: number;
+  paidAmount: number;
   date: Date;
   createdAt: Date;
   dealer: Dealer;
   items: TransactionItem[];
+  stockUpdated: boolean;
 }
 
 export interface TransactionItem {

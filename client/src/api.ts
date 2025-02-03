@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -22,6 +22,8 @@ export const API_ROUTE = {
   DEALER: {
     GET_ALL: "/dealers",
     CREATE: "/dealer",
+    DELETE: "/dealer/:id",
+    UPDATE: "/dealer/:id",
     SEARCH: "/dealer/search",
   },
   STOCK: {

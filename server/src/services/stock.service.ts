@@ -56,5 +56,12 @@ export const updateStockForTransaction = async (transactionId: number) => {
     });
   }
 
+  await prisma.transaction.update({
+    where: { id: transactionId },
+    data: {
+      stockUpdated: true,
+    }
+  });
+
   return `Stock updated for transaction ID: ${transactionId}`;
 };

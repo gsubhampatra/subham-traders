@@ -7,6 +7,8 @@ import {
   getAllDealersController,
   createDealerController,
   searchDealerController,
+  deleteDealerController,
+  updateDealerController,
 } from "../controllers/dealer.controller";
 import {
   getStockController,
@@ -47,8 +49,10 @@ router.delete(
 );
 
 // Dealer Routes
-router.get("/dealers", authenticate, getAllDealersController);
-router.post("/dealer", authenticate, createDealerController);
+router.get("/dealers", getAllDealersController);
+router.post("/dealer", createDealerController);
+router.delete("/dealer/:id", deleteDealerController);
+router.put("/dealer/:id", updateDealerController);
 router.get("/dealer/search", searchDealerController);
 
 // Stock Routes

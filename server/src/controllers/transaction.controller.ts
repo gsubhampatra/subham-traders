@@ -11,12 +11,13 @@ export const createTransactionController = async (
   res: Response
 ) => {
   try {
-    const { dealerId, userId, items, totalPrice } = req.body;
+    const { dealerId, userId, items, totalAmount, paidAmount } = req.body;
     const transaction = await createTransaction(
       dealerId,
       userId,
       items,
-      totalPrice
+      totalAmount,
+      paidAmount
     );
     res.status(201).json({
       success: true,

@@ -8,6 +8,9 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc"
   },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "keywords": [
     "nodejs",
     "typescript",
