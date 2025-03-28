@@ -3,6 +3,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { logger } from "./utils/logger";
 import router from "./routes/routes";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
 export function createApp(): Application {
@@ -11,6 +12,8 @@ export function createApp(): Application {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cookieParser())
+
   app.use(cors());
 
   app.get("/", (req: Request, res: Response) => {
