@@ -1,7 +1,6 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import { Toaster } from "react-hot-toast";
-import Navbar from "./Navbar";
 
 const PageLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -11,7 +10,6 @@ const PageLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       color: '#975715',
     }}} />
       {/* Navbar */}
-      <Navbar />
       {/* Main Content */}
       <div className="flex flex-1">
         {/* Sidebar */}
