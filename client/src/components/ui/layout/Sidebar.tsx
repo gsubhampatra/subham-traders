@@ -26,11 +26,11 @@ const Sidebar: React.FC = () => {
             </li>
             <li className="mb-2">
               <Link
-                to="/items"
+                to="/customer"
                 onClick={() => setIsOpen(false)}
                 className="block p-2 text-center rounded-lg hover:bg-secondary-dark hover:text-primary-bg"
               >
-                Items
+                Customers
               </Link>
             </li>
             <li className="mb-2">

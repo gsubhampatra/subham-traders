@@ -1,9 +1,61 @@
-// Auth Input Types
-export interface RegisterInput {
+export interface AccountInput {
   name: string;
-  email: string;
-  password: string;
-  role: "ADMIN" | "STAFF";
+  accountNo: string;
+  bankName: string;
+  balance?: number; // Defaults to 0 on the server side
+}
+
+export interface CustomerInput {
+  name: string;
+  contact: string;
+  address: string;
+  creditBalance?: number; // Defaults to 0 on the server side
+}
+
+export interface DealerInput {
+  name: string;
+  contact: string;
+  address: string;
+}
+
+export interface ItemInput {
+  name: string;
+  unitPrice: number;
+}
+
+export interface PurchaseItemInput {
+  itemId: number;
+  quantity: number;
+  price: number;
+}
+
+export interface PurchaseInput {
+  dealerId: number;
+  totalAmount: number;
+  paidAmount: number;
+  items: PurchaseItemInput[];
+}
+
+export interface SaleItemInput {
+  itemId: number;
+  quantity: number;
+  price: number;
+}
+
+export interface SaleInput {
+  customerId: number;
+  truckNumber: string;
+  totalAmount: number;
+  paidAmount: number;
+  items: SaleItemInput[];
+}
+
+export interface PaymentInput {
+  amount: number;
+  accountId: number;
+  dealerId?: number;
+  customerId?: number;
+  message?: string;
 }
 
 export interface LoginInput {
@@ -11,62 +63,14 @@ export interface LoginInput {
   password: string;
 }
 
-// Item Input Types
-export interface CreateItemInput {
+export interface CreateUserInput {
   name: string;
-  unitPrice: number;
+  email: string;
+  password: string;
+  PhoneNumber: string;
 }
 
-export interface UpdateItemInput {
-  id: number;
-  name?: string;
-  unitPrice?: number;
-}
-
-// Stock Input Types
-export interface StockOperationInput {
-  itemId: number;
-  quantity: number;
-}
-
-export interface UpdateStockByTransactionInput {
-  transactionId: number;
-}
-
-// Dealer Input Types
-export interface CreateDealerInput {
-  name: string;
-  contact: string;
-  address: string;
-}
-
-export interface UpdateDealerInput {
-  id: number;
-  name?: string;
-  contact?: string;
-  address?: string;
-}
-
-export interface SearchDealerInput {
-  name: string;
-}
-
-// Transaction Input Types
-export interface TransactionItemInput {
-  itemId: number;
-  quantity: number;
-  price: number;
-}
-
-export interface CreateTransactionInput {
-  dealerId: number;
-  userId: number;
-  items: TransactionItemInput[];
-  totalAmount: number;
-  paidAmount: number;
-}
-
-export interface TransactionDateRangeInput {
-  startDate: Date;
-  endDate: Date;
+export interface UpdateCustomerBySaleInput {
+  saleId: number;
+  creditBalance?: number;
 }

@@ -8,17 +8,18 @@ export const authenticate = (
   next: NextFunction
 ) => {
   const token = req.headers.cookie?.split("=")[1];
+
   if (!token) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Authentication token is required" });
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
   try {
     const decoded = verifyToken(token);
+    console.log("Decoded token:", decoded); // Log the decoded token for debugging
     req.body.user = decoded; // Attach user info to the request
     next();
   } catch (error) {
+    console.error("Token verification error:", error);
     return res
       .status(403)
       .json({ success: false, message: "Invalid or expired token" });

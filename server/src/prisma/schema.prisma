@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,24 +9,26 @@ datasource db {
 
 // Dealer Model
 model Dealer {
-  id           Int           @id @default(autoincrement())
-  name         String
-  contact      String
-  address      String
-  transactions Transaction[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id        Int        @id @default(autoincrement())
+  name      String
+  contact   String
+  address   String
+  purchases Purchase[]
+  payments  Payment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 // Item Model
 model Item {
-  id           Int               @id @default(autoincrement())
-  name         String
-  unitPrice    Float
-  stock        Stock?
-  transactions TransactionItem[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id        Int            @id @default(autoincrement())
+  name      String
+  unitPrice Float
+  stock     Stock?
+  purchases PurchaseItem[]
+  sales     SaleItem[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 // Stock Model
@@ -44,45 +40,113 @@ model Stock {
   updatedAt DateTime @updatedAt
 }
 
-// Transaction Model
-model Transaction {
-  id           Int               @id @default(autoincrement())
-  dealer       Dealer            @relation(fields: [dealerId], references: [id])
-  dealerId     Int
-  user         User              @relation(fields: [userId], references: [id])
-  userId       Int
-  items        TransactionItem[]
-  totalAmount  Float
-  paidAmount   Float
-  stockUpdated Boolean           @default(false)
-  date         DateTime          @default(now())
-  createdAt    DateTime          @default(now())
+// Purchase Model (Buying goods from dealers)
+model Purchase {
+  id          Int            @id @default(autoincrement())
+  dealer      Dealer         @relation(fields: [dealerId], references: [id])
+  dealerId    Int
+  items       PurchaseItem[]
+  totalAmount Float
+  paidAmount  Float
+  date        DateTime       @default(now())
+  createdAt   DateTime       @default(now())
 }
 
-model TransactionItem {
-id            Int         @id @default(autoincrement())
-  item          Item        @relation(fields: [itemId], references: [id])
-  itemId        Int
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
-  transactionId Int
-  quantity      Float
-  price         Float
+// Purchase Item Model
+model PurchaseItem {
+  id         Int      @id @default(autoincrement())
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchaseId Int
+  item       Item     @relation(fields: [itemId], references: [id])
+  itemId     Int
+  quantity   Float
+  price      Float
+}
+
+// Sale Model (Selling goods to customers)
+model Sale {
+  id          Int        @id @default(autoincrement())
+  customer    Customer   @relation(fields: [customerId], references: [id])
+  customerId  Int
+  truckNumber String
+  items       SaleItem[]
+  totalAmount Float
+  paidAmount  Float
+  isSaleUpdate Boolean  @default(false)
+  date        DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+}
+
+// Sale Item Model
+model SaleItem {
+  id       Int   @id @default(autoincrement())
+  sale     Sale  @relation(fields: [saleId], references: [id])
+  saleId   Int
+  item     Item  @relation(fields: [itemId], references: [id])
+  itemId   Int
+  quantity Float
+  price    Float
+}
+
+// Payment Model (For recording received and sent amounts)
+model Payment {
+  id         Int         @id @default(autoincrement())
+  type       PaymentType
+  amount     Float
+  account    Account     @relation(fields: [accountId], references: [id])
+  accountId  Int
+  dealer     Dealer?     @relation(fields: [dealerId], references: [id])
+  dealerId   Int?
+  customer   Customer?   @relation(fields: [customerId], references: [id])
+  customerId Int?
+  message    String?
+  date       DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+}
+
+// Account Model (For managing bank accounts)
+model Account {
+  id        Int       @id @default(autoincrement())
+  name      String
+  accountNo String    @unique
+  bankName  String
+  balance   Float     @default(0.0)
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Customer Model (To track sales and credits)
+model Customer {
+  id            Int       @id @default(autoincrement())
+  name          String
+  contact       String
+  address       String
+  creditBalance Float     @default(0.0)
+  sales         Sale[]
+  payments      Payment[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 // User Model
 model User {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  password     String
-  role         Role
-  transactions Transaction[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  PhoneNumber String   @unique
+  password    String
+  role        Role
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum Role {
   ADMIN
   STAFF
 }
-  
+
+enum PaymentType {
+  RECEIVED
+  SENT
+}

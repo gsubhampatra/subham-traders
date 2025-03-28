@@ -9,33 +9,68 @@ export const api = axios.create({
 
 export const API_ROUTE = {
   AUTH: {
-    REGISTER: "/register",
     LOGIN: "/login",
+    LOGOUT: "/logout",
+    CURRENT_USER: "/current-user",
+  },
+  ACCOUNT: {
+    CREATE: "/account",
+    GET_ALL: "/accounts",
+    GET_ONE: "/account/:id",
+    UPDATE: "/account/:id",
+    DELETE: "/account/:id",
+  },
+  CUSTOMER: {
+    CREATE: "/customer",
+    GET_ALL: "/customers",
+    GET_ONE: "/customer/:id",
+    UPDATE: "/customer/:id",
+    DELETE: "/customer/:id",
+  },
+  DEALER: {
+    CREATE: "/dealer",
+    GET_ALL: "/dealers",
+    GET_ONE: "/dealer/:id",
+    UPDATE: "/dealer/:id",
+    DELETE: "/dealer/:id",
   },
   ITEM: {
+    CREATE: "/item",
     GET_ALL: "/items",
     GET_ONE: "/item/:id",
-    CREATE: "/item",
     UPDATE: "/item/:id",
     DELETE: "/item/:id",
   },
-  DEALER: {
-    GET_ALL: "/dealers",
-    CREATE: "/dealer",
-    DELETE: "/dealer/:id",
-    UPDATE: "/dealer/:id",
-    SEARCH: "/dealer/search",
+  PAYMENT: {
+    CREATE_RECEIVED: "/payment/received",
+    CREATE_SENT: "/payment/sent",
+    GET_BY_ACCOUNT: "/account/:accountId/payments",
+    GET_BY_DATE: "/payment/date",
+    GET_TOTAL_AMOUNT: "/payment/accounts/total",
+  },
+  PURCHASE: {
+    CREATE: "/purchase",
+    GET_BY_DEALER: "/purchases/dealer/:dealerId",
+    GET_BY_DATE: "/purchase/date",
+  },
+  SALE: {
+    CREATE: "/sale",
+    GET_BY_CUSTOMER: "/sales/customer/:customerId",
+    GET_BY_DATE: "/sale/date",
+    UPDATE_CUSTOMER: "/sale/customer",
   },
   STOCK: {
-    GET_ALL: "/stock",
     INCREMENT: "/stock/increment",
     DECREMENT: "/stock/decrement",
-    UPDATE: "/stock/update",
-    UPDATE_BY_TRANSACTION: "/stock/update-by-transaction",
+    GET_ALL: "/stock",
   },
-  TRANSACTION: {
-    GET_ALL: "/transactions",
-    CREATE: "/transaction",
-    GET_BY_DATE: "/transactions/by-date",
+  USER: {
+    CREATE: "/user",
+    GET_ALL: "/users",
+    GET_ONE: "/user/:id",
+    UPDATE: "/user/:id",
+    DELETE: "/user/:id",
   },
 };
+
+export default api;

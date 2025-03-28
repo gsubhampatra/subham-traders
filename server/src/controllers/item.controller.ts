@@ -1,113 +1,67 @@
 import { Request, Response } from "express";
-import {
-  createItem,
-  updateItem,
-  deleteItem,
-  getItem,
-  getItems,
-} from "../services/item.service";
+import prisma from "../prisma";
+import { validateRequest, itemSchema } from "../utils/validate";
+import { handleError } from "../utils/error-handeler";
 
-export const createItemController = async (req: Request, res: Response) => {
+// Create Item
+export const createItem = async (req: Request, res: Response) => {
   try {
-    const { name, unitPrice } = req.body;
-
-    if (!name || !unitPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and unit price are required",
-      });
-    }
-
-    const item = await createItem(name, unitPrice);
-    return res
-      .status(201)
-      .json({ success: true, message: "Item created", item });
+    const validatedData = validateRequest(itemSchema, req.body);
+    const item = await prisma.item.create({ data: validatedData });
+    res.status(201).json(item);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to create item" });
+    handleError(error, res, "Error while creating item");
   }
 };
 
-export const updateItemController = async (req: Request, res: Response) => {
+// Get All Items
+export const getItems = async (_req: Request, res: Response) => {
   try {
-    const { name, unitPrice } = req.body;
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "ID is required",
-      });
-    }
-
-    if (!name && !unitPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Name or unit price is required",
-      });
-    }
-
-    const item = await updateItem(Number(id), { name, unitPrice });
-    return res
-      .status(200)
-      .json({ success: true, message: "Item updated", item });
+    const items = await prisma.item.findMany({
+      include: { stock: true },
+    });
+    res.json(items);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to update item" });
+    handleError(error, res, "Error while fetching items");
   }
 };
 
-export const deleteItemController = async (req: Request, res: Response) => {
+// Get Single Item by ID
+export const getItemById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "ID is required" });
-    }
-
-    await deleteItem(parseInt(id));
-    return res.status(200).json({ success: true, message: "Item deleted" });
+    const item = await prisma.item.findUnique({
+      where: { id: Number(req.params.id) },
+      include: { stock: true },
+    });
+    if (!item) throw new Error("Item not found");
+    res.json(item);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to delete item" });
+    handleError(error, res, "Error while fetching item");
   }
 };
 
-export const getItemController = async (req: Request, res: Response) => {
+// Update Item
+export const updateItem = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "ID is required" });
-    }
-
-    const item = await getItem(parseInt(id));
-    return res
-      .status(200)
-      .json({ success: true, message: "Item fetched", item });
+    const validatedData = validateRequest(itemSchema, req.body);
+    const item = await prisma.item.update({
+      where: { id: Number(req.params.id) },
+      data: validatedData,
+    });
+    res.json(item);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch item" });
+    handleError(error, res, "Error while updating item");
   }
 };
 
-export const getAllItemsController = async (req: Request, res: Response) => {
+// Delete Item
+export const deleteItem = async (req: Request, res: Response) => {
   try {
-    const items = await getItems();
-    return res
-      .status(200)
-      .json({ success: true, message: "Items fetched", items });
+    await prisma.item.delete({
+      where: { id: Number(req.params.id) },
+    });
+    res.json({ message: "Item deleted successfully" });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch items" });
+    handleError(error, res, "Error while deleting item");
   }
 };

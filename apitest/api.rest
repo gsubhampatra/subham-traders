@@ -1,154 +1,334 @@
 @baseUrl = http://localhost:3000/api
 
-###var
-@cookie =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNzg3MTY4OCwiZXhwIjoxNzM3OTU4MDg4fQ.PKDpjfNWVdFY9QtxKgEi6i93dmQ2rNTSoJ7wp3AgphY; Max-Age=2592000; Path=/; Expires=Tue, 25 Feb 2025 06:08:08 GMT
 ### Auth Routes
-
-# Register Admin
-POST {{baseUrl}}/register
-Content-Type: application/json
-
-{
-    "name": "Admin User",
-    "email": "admin@example.com",
-    "password": "admin123",
-    "role": "ADMIN"
-}
-
-### Login Admin
+# Login
 POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-    "email": "admin@example.com",
+    "email": "subham@st.com",
     "password": "admin123"
 }
 
-### Item Routes
+### Logout
+POST {{baseUrl}}/logout
 
-# Create Item
-POST {{baseUrl}}/item
-Cookie: token={{cookie}}
+
+### current user
+GET {{baseUrl}}/current-user
+
+
+### User Routes - Create Admin User
+POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-    "name": "ଧାନ",
-    "unitPrice": 15
+    "email": "subham@st.com",
+    "password": "admin123",
+    "role": "ADMIN",
+    "name": "Admin User",
+    "PhoneNumber": "7847916571"
 }
 
-# Get All Items
-GET {{baseUrl}}/items
-Cookie: token={{cookie}}
+### Create Regular User
+POST {{baseUrl}}/user
+Content-Type: application/json
 
-# Get Item by ID
-GET {{baseUrl}}/item/1
-Cookie: token={{cookie}}
 
-# Update Item
-PUT {{baseUrl}}/item/1
-Cookie: token={{cookie}}
+{
+    "name": "Test User",
+    "email": "testuser@example.com",
+    "password": "password123",
+    "PhoneNumber": "9876543210",
+    "role": "STAFF"
+}
+
+### Get All Users
+GET {{baseUrl}}/users
+
+
+
+### Get User by ID
+GET {{baseUrl}}/user/5
+
+
+
+### Update User
+PUT {{baseUrl}}/user/6
 Content-Type: application/json
 
 {
-    "name": "Updated Item",
-    "unitPrice": 150
+    "name": "Staff User",
+    "PhoneNumber": "9876543210"
 }
 
-# Delete Item (Admin only)
-DELETE {{baseUrl}}/item/1
-Cookie: token={{cookie}}
+### Delete User
+DELETE {{baseUrl}}/user/1
 
-### Dealer Routes
 
-# Create Dealer
+
+### Account Routes - Create Account
+POST {{baseUrl}}/account
+Content-Type: application/json
+
+
+
+{
+    "name": "Main Account",
+    "accountNo": "12345678",
+    "bankName": "State Bank",
+    "balance": 10000
+}
+
+### Get All Accounts
+GET {{baseUrl}}/accounts
+
+
+
+### Get Account by ID
+GET {{baseUrl}}/account/1
+
+
+### Update Account
+PUT {{baseUrl}}/account/1
+Content-Type: application/json
+
+
+
+{
+    "name": "Updated Account",
+    "accountNo": "12345678",
+    "bankName": "State Bank",
+    "balance": 15000
+}
+
+### Delete Account
+DELETE {{baseUrl}}/account/1
+
+
+
+### Customer Routes - Create Customer
+POST {{baseUrl}}/customer
+Content-Type: application/json
+
+
+{
+    "name": "Test Customer",
+    "contact": "9876543210",
+    "address": "Test Address",
+    "creditBalance": 0
+}
+
+### Get All Customers
+GET {{baseUrl}}/customers
+
+
+### Get Customer by ID
+GET {{baseUrl}}/customer/1
+
+
+### Update Customer
+PUT {{baseUrl}}/customer/1
+Content-Type: application/json
+
+
+{
+    "name": "Updated Customer",
+    "contact": "9876543210",
+    "address": "New Address",
+    "creditBalance": 500
+}
+
+### Delete Customer
+DELETE {{baseUrl}}/customer/1
+
+
+### Dealer Routes - Create Dealer
 POST {{baseUrl}}/dealer
-Cookie: cookie={{cookie}}
 Content-Type: application/json
+
 
 {
     "name": "Test Dealer",
-    "contact": "1234567890",
+    "contact": "9876543210",
     "address": "Test Address"
 }
 
-# Get All Dealers
+### Get All Dealers
 GET {{baseUrl}}/dealers
-Cookie: token={{cookie}}
 
-# Search Dealer
-GET {{baseUrl}}/dealer/search?name=Test
-Cookie: token={{cookie}}
 
-### Stock Routes
+### Get Dealer by ID
+GET {{baseUrl}}/dealer/1
 
-# Get Stock (Admin only)
+
+### Update Dealer
+PUT {{baseUrl}}/dealer/1
+Content-Type: application/json
+
+
+{
+    "name": "Updated Dealer",
+    "contact": "9876543210",
+    "address": "New Address"
+}
+
+### Delete Dealer
+DELETE {{baseUrl}}/dealer/1
+
+
+### Item Routes - Create Item
+POST {{baseUrl}}/item
+Content-Type: application/json
+
+
+{
+    "name": "Rice",
+    "unitPrice": 50
+}
+
+### Get All Items
+GET {{baseUrl}}/items
+
+
+### Get Item by ID
+GET {{baseUrl}}/item/1
+
+
+### Update Item
+PUT {{baseUrl}}/item/1
+Content-Type: application/json
+
+
+{
+    "name": "Premium Rice",
+    "unitPrice": 60
+}
+
+### Delete Item
+DELETE {{baseUrl}}/item/1
+
+
+### Stock Routes - Get All Stocks
 GET {{baseUrl}}/stock
-Cookie: token={{cookie}}
 
-# Increment Stock
+
+### Increment Stock
 POST {{baseUrl}}/stock/increment
-Cookie: token={{cookie}}
 Content-Type: application/json
+
 
 {
     "itemId": 1,
-    "quantity": 10
+    "quantity": 100
 }
 
-# Decrement Stock
+### Decrement Stock
 POST {{baseUrl}}/stock/decrement
-Cookie: token={{cookie}}
 Content-Type: application/json
 
-{
-    "itemId": 1,
-    "quantity": 5
-}
-
-# Update Stock
-POST {{baseUrl}}/stock/update
-Cookie: cookie={{cookie}}
-Content-Type: application/json
 
 {
     "itemId": 1,
     "quantity": 20
 }
 
-# Update Stock by Transaction
-POST {{baseUrl}}/stock/update-by-transaction
-Cookie: cookie={{cookie}}
+### Purchase Routes - Create Purchase
+POST {{baseUrl}}/purchase
 Content-Type: application/json
 
-{
-    "transactionId": 1
-}
-
-### Transaction Routes
-
-# Create Transaction
-POST {{baseUrl}}/transaction
-Cookie: cookie={{cookie}}
-Content-Type: application/json
 
 {
     "dealerId": 1,
-    "userId": 1,
+    "totalAmount": 10000,
+    "paidAmount": 8000,
     "items": [
         {
             "itemId": 1,
-            "quantity": 2,
-            "price": 100
+            "quantity": 100,
+            "price": 50
+        },
+        {
+            "itemId": 2,
+            "quantity": 200,
+            "price": 25
         }
-    ],
-    "totalPrice": 200
+    ]
 }
 
-# Get All Transactions
-GET {{baseUrl}}/transactions
-Cookie: cookie={{cookie}}
+### Get Purchases by Dealer
+GET {{baseUrl}}/purchases/dealer/1
 
-# Get Transactions by Date Range
-GET {{baseUrl}}/transactions/by-date?startDate=2024-03-01&endDate=2024-03-20
-Cookie: cookie={{cookie}}
+
+### Get Purchases by Date
+GET {{baseUrl}}/purchase/date?date=2025-03-26
+
+
+### Sale Routes - Create Sale
+POST {{baseUrl}}/sale
+Content-Type: application/json
+
+
+{
+    "customerId": 1,
+    "truckNumber": "OD-02-AB-1234",
+    "totalAmount": 5000,
+    "paidAmount": 4000,
+    "items": [
+        {
+            "itemId": 1,
+            "quantity": 50,
+            "price": 60
+        },
+        {
+            "itemId": 2,
+            "quantity": 100,
+            "price": 30
+        }
+    ]
+}
+
+### Get Sales by Customer
+GET {{baseUrl}}/sales/customer/1
+
+
+### Get Sales by Date
+GET {{baseUrl}}/sale/date?date=2025-03-26
+
+
+### Payment Routes - Record Payment Received
+POST {{baseUrl}}/payment/received
+Content-Type: application/json
+
+
+{
+    "amount": 5000,
+    "accountId": 1,
+    "customerId": 1,
+    "message": "Payment received for previous sales"
+}
+
+### Record Payment Sent
+POST {{baseUrl}}/payment/sent
+Content-Type: application/json
+
+
+{
+    "amount": 2000,
+    "accountId": 1,
+    "dealerId": 1,
+    "message": "Payment for recent purchase"
+}
+
+### Get Payments by Account
+GET {{baseUrl}}/account/1/payments
+
+
+### Get Payments by Date
+GET {{baseUrl}}/payment/date?date=2025-03-26
+
+
+### Get Total Amount in All Accounts
+GET {{baseUrl}}/payment/accounts/total
+
 

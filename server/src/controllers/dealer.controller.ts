@@ -1,122 +1,64 @@
 import { Request, Response } from "express";
-import {
-  createDealer,
-  deleteDealer,
-  getAllDealers,
-  searchDealer,
-  updateDealer,
-} from "../services/dealer.service";
+import prisma from "../prisma";
+import { validateRequest, dealerSchema } from "../utils/validate";
+import { handleError } from "../utils/error-handeler";
 
-// Create a new dealer
-export const createDealerController = async (req: Request, res: Response) => {
+// Create Dealer
+export const createDealer = async (req: Request, res: Response) => {
   try {
-    const { name, contact, address } = req.body;
-    const dealer = await createDealer(name, contact, address);
-    return res
-      .status(201)
-      .json({ success: true, message: "Dealer created successfully", dealer });
+    const validatedData = validateRequest(dealerSchema, req.body);
+    const dealer = await prisma.dealer.create({ data: validatedData });
+    res.status(201).json(dealer);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to create dealer" });
+    handleError(error, res, "Error while creating dealer");
   }
 };
 
-// Get all dealers
-export const getAllDealersController = async (_req: Request, res: Response) => {
+// Get All Dealers
+export const getDealers = async (_req: Request, res: Response) => {
   try {
-    const dealers = await getAllDealers();
-    return res.status(200).json({
-      success: true,
-      message: "Dealers fetched successfully",
-      dealers,
-    });
+    const dealers = await prisma.dealer.findMany();
+    res.json(dealers);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch dealers" });
+    handleError(error, res, "Error while fetching dealers");
   }
 };
 
-// Search dealer
-export const searchDealerController = async (req: Request, res: Response) => {
+// Get Single Dealer by ID
+export const getDealerById = async (req: Request, res: Response) => {
   try {
-    const { name } = req.query as { name: string };
-    const dealers = await searchDealer(name);
-    return res.status(200).json({
-      success: true,
-      message: "Dealers searched successfully",
-      dealers,
+    const dealer = await prisma.dealer.findUnique({
+      where: { id: Number(req.params.id) },
     });
+    if (!dealer) throw new Error("Dealer not found");
+    res.json(dealer);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to search dealer" });
+    handleError(error, res, "Error while fetching dealer");
   }
 };
 
-//delete dealer
-export const deleteDealerController = async (req: Request, res: Response) => {
+// Update Dealer
+export const updateDealer = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Dealer id is required" });
-    }
-
-    const dealerId = parseInt(id);
-
-    const deletedDealer = await deleteDealer(dealerId);
-
-    return res.status(200).json({
-      success: true,
-      message: "Dealer deleted successfully",
-      dealer: deletedDealer,
+    const validatedData = validateRequest(dealerSchema, req.body);
+    const dealer = await prisma.dealer.update({
+      where: { id: Number(req.params.id) },
+      data: validatedData,
     });
+    res.json(dealer);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to delete dealer" });
+    handleError(error, res, "Error while updating dealer");
   }
 };
 
-//update dealer
-export const updateDealerController = async (req: Request, res: Response) => {
+// Delete Dealer
+export const deleteDealer = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { name, contact, address } = req.body;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Dealer id is required" });
-    }
-
-    if (!name && !contact && !address) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one of the fields is required",
-      });
-    }
-
-    const dealerId = parseInt(id);
-
-    const updatedDealer = await updateDealer(dealerId, {
-      name,
-      contact,
-      address,
+    await prisma.dealer.delete({
+      where: { id: Number(req.params.id) },
     });
-
-    return res.status(200).json({
-      success: true,
-      message: "Dealer updated successfully",
-      dealer: updatedDealer,
-    });
+    res.json({ message: "Dealer deleted successfully" });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to update dealer" });
+    handleError(error, res, "Error while deleting dealer");
   }
 };

@@ -1,96 +1,65 @@
 import { Request, Response } from "express";
-import {
-  incrementStock,
-  decrementStock,
-  updateStock,
-  getStock,
-  updateStockForTransaction,
-} from "../services/stock.service";
+import prisma from "../prisma";
+import { handleError } from "../utils/error-handeler";
 
-// Increment stock
-export const incrementStockController = async (req: Request, res: Response) => {
+// Increment Stock
+export const incrementStock = async (req: Request, res: Response) => {
   try {
     const { itemId, quantity } = req.body;
-    const stock = await incrementStock(itemId, quantity);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Stock incremented successfully",
-        stock,
-      });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to increment stock" });
-  }
-};
 
-// Decrement stock
-export const decrementStockController = async (req: Request, res: Response) => {
-  try {
-    const { itemId, quantity } = req.body;
-    const stock = await decrementStock(itemId, quantity);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Stock decremented successfully",
-        stock,
-      });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to decrement stock" });
-  }
-};
-
-// Update stock
-export const updateStockController = async (req: Request, res: Response) => {
-  try {
-    const { itemId, quantity } = req.body;
-    const stock = await updateStock(itemId, quantity);
-    return res
-      .status(200)
-      .json({ success: true, message: "Stock updated successfully", stock });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Failed to update stock" });
-  }
-};
-
-// Get stock details
-export const getStockController = async (_req: Request, res: Response) => {
-  try {
-    const stock = await getStock();
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Stock details fetched successfully",
-        stock,
-      });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch stock details" });
-  }
-};
-
-export const updateStockByTransactionController = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const { transactionId } = req.body;
-
-    if (!transactionId) {
-      return res.status(400).json({ error: "Transaction ID is required" });
+    if (!itemId || !quantity || quantity <= 0) {
+      throw new Error("Invalid itemId or quantity");
     }
 
-    const result = await updateStockForTransaction(transactionId);
-    return res.status(200).json({ message: result });
+    const stock = await prisma.stock.upsert({
+      where: { itemId },
+      update: { quantity: { increment: quantity } },
+      create: { itemId, quantity },
+    });
+
+    res.json(stock);
   } catch (error) {
-    return res.status(500).json({ error: "Failed to update stock" });
+    handleError(error, res, "Error while incrementing stock");
   }
 };
 
+// Decrement Stock
+export const decrementStock = async (req: Request, res: Response) => {
+  try {
+    const { itemId, quantity } = req.body;
+
+    if (!itemId || !quantity || quantity <= 0) {
+      throw new Error("Invalid itemId or quantity");
+    }
+
+    const stock = await prisma.stock.findUnique({ where: { itemId } });
+
+    if (!stock || stock.quantity < quantity) {
+      throw new Error("Insufficient stock");
+    }
+
+    const updatedStock = await prisma.stock.update({
+      where: { itemId },
+      data: { quantity: { decrement: quantity } },
+    });
+
+    res.json(updatedStock);
+  } catch (error) {
+    handleError(error, res, "Error while decrementing stock");
+  }
+};
+
+// Get Stocks
+export const getStocks = async (req: Request, res: Response) => {
+  try {
+    const stock = await prisma.stock.findMany({
+      include: { item: true },
+    });
+
+    if (!stock) throw new Error("Stocks not found");
+
+    res.json(stock);
+  } catch (error) {
+    handleError(error, res, "Error while fetching stocks");
+  }
+};
