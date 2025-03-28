@@ -54,10 +54,6 @@ export const logout = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    if (!req.body.user) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
     const user = await prisma.user.findUnique({
       where: { id: req.body.user.userId },
     });

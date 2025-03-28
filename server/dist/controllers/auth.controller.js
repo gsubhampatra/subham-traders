@@ -54,9 +54,6 @@ const logout = async (req, res) => {
 exports.logout = logout;
 const getCurrentUser = async (req, res) => {
     try {
-        if (!req.body.user) {
-            return res.status(401).json({ error: "Unauthorized" });
-        }
         const user = await prisma_1.default.user.findUnique({
             where: { id: req.body.user.userId },
         });
