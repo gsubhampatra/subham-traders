@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
 import { Toaster } from "react-hot-toast";
+import Navbar from "./Navbar";
 
 const PageLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
